@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GUJI STUDIO 古紀影像｜商業攝影 · 動態影像 · 後期剪輯</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0d0d0d;
+    --paper:#ffffff;
+    --ash:#f4f3f1;
+    --line:#e2e0da;
+    --muted:#6f6d68;
+    --ember:#ff7f24;
+    --ember-dark:#d6650f;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{display:block;max-width:100%;}
+  a{color:inherit;text-decoration:none;}
+  ul{list-style:none;}
+
+  h1,h2,h3,h4{
+    font-family:'Big Shoulders Display',sans-serif;
+    font-weight:700;
+    line-height:1;
+    letter-spacing:.01em;
+  }
+
+  .wrap{max-width:1240px;margin:0 auto;padding:0 32px;}
+
+  /* ===== NAV ===== */
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    background:rgba(255,255,255,0);
+    transition:background .35s ease, box-shadow .35s ease;
+  }
+  header.solid{
+    background:rgba(255,255,255,.96);
+    box-shadow:0 1px 0 var(--line);
+    backdrop-filter:blur(6px);
+  }
+  .navbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:22px 32px;
+    max-width:1240px;margin:0 auto;
+  }
+  .logo{
+    font-family:'Big Shoulders Display',sans-serif;
+    font-weight:800;font-size:26px;letter-spacing:.02em;
+    color:var(--ink);
+    display:flex;align-items:baseline;gap:6px;
+  }
+  header:not(.solid) .logo{color:#fff;}
+  .logo span{color:var(--ember);}
+
+  nav.main-nav{display:flex;align-items:center;gap:4px;}
+  nav.main-nav > ul{display:flex;align-items:center;gap:8px;}
+  nav.main-nav > ul > li{position:relative;}
+  nav.main-nav > ul > li > a{
+    display:block;
+    padding:10px 16px;
+    font-size:15px;font-weight:500;
+    color:var(--ink);
+    position:relative;
+  }
+  header:not(.solid) nav.main-nav > ul > li > a{color:#fff;}
+  nav.main-nav > ul > li > a::after{
+    content:"";position:absolute;left:16px;right:16px;bottom:4px;height:2px;
+    background:var(--ember);transform:scaleX(0);transform-origin:left;
+    transition:transform .25s ease;
+  }
+  nav.main-nav > ul > li:hover > a::after,
+  nav.main-nav > ul > li.open > a::after{transform:scaleX(1);}
+
+  .submenu{
+    position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);
+    background:var(--ink);
+    min-width:180px;
+    padding:8px 0;
+    opacity:0;visibility:hidden;
+    transform:translateX(-50%) translateY(6px);
+    transition:opacity .2s ease, transform .2s ease, visibility .2s;
+  }
+  nav.main-nav > ul > li:hover .submenu{
+    opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);
+  }
+  .submenu a{
+    display:block;padding:10px 20px;font-size:14px;color:#f2f2f2;
+    border-left:2px solid transparent;
+  }
+  .submenu a:hover{border-left-color:var(--ember);color:var(--ember);background:rgba(255,255,255,.04);}
+
+  .nav-cta{
+    display:inline-block;padding:11px 22px;
+    background:var(--ember);color:#fff;
+    font-size:14px;font-weight:600;
+    border-radius:2px;
+    transition:background .2s ease;
+  }
+  .nav-cta:hover{background:var(--ember-dark);}
+
+  .burger{display:none;flex-direction:column;gap:5px;width:26px;cursor:pointer;background:none;border:none;padding:6px;}
+  .burger span{height:2px;background:var(--ink);display:block;transition:.25s;}
+  header:not(.solid) .burger span{background:#fff;}
+
+  /* ===== HERO CAROUSEL ===== */
+  .hero{
+    position:relative;
+    width:100%;
+    aspect-ratio:16/8.4;
+    max-height:680px;
+    min-height:420px;
+    overflow:hidden;
+    background:var(--ink);
+  }
+  .hero-track{
+    display:flex;height:100%;
+    transition:transform .6s cubic-bezier(.65,0,.35,1);
+    touch-action:pan-y;
+  }
+  .slide{
+    position:relative;
+    flex:0 0 100%;height:100%;
+    overflow:hidden;
+  }
+  .slide img{
+    width:100%;height:100%;object-fit:cover;
+    filter:grayscale(100%) contrast(1.05);
+    transform:scale(1.02);
+  }
+  .slide::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(0deg, rgba(0,0,0,.65) 0%, rgba(0,0,0,.15) 45%, rgba(0,0,0,.35) 100%);
+  }
+  .slide-copy{
+    position:absolute;left:0;right:0;bottom:0;
+    padding:0 32px 64px;
+    max-width:1240px;margin:0 auto;
+    color:#fff;
+  }
+  .slide-copy .tag{
+    display:inline-block;font-size:13px;font-weight:600;letter-spacing:.04em;
+    color:var(--ember);margin-bottom:14px;
+    padding-left:14px;border-left:2px solid var(--ember);
+  }
+  .slide-copy h2{font-size:clamp(32px,5.4vw,64px);max-width:14ch;margin-bottom:14px;}
+  .slide-copy p{font-size:15px;color:#e6e6e6;max-width:38ch;margin-bottom:22px;}
+  .slide-copy .btn{
+    display:inline-block;padding:13px 26px;border:1px solid #fff;color:#fff;
+    font-size:14px;font-weight:600;transition:all .2s ease;
+  }
+  .slide-copy .btn:hover{background:#fff;color:var(--ink);}
+
+  .hero-arrow{
+    position:absolute;top:50%;transform:translateY(-50%);
+    width:44px;height:44px;border-radius:50%;
+    background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.5);
+    color:#fff;font-size:18px;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;z-index:5;transition:background .2s ease;
+  }
+  .hero-arrow:hover{background:rgba(255,255,255,.28);}
+  .hero-arrow.prev{left:24px;}
+  .hero-arrow.next{right:24px;}
+
+  .hero-dots{
+    position:absolute;right:32px;bottom:28px;
+    display:flex;gap:10px;z-index:5;
+  }
+  .hero-dots button{
+    width:34px;height:3px;background:rgba(255,255,255,.4);
+    border:none;cursor:pointer;padding:0;position:relative;overflow:hidden;
+  }
+  .hero-dots button.active{background:rgba(255,255,255,.4);}
+  .hero-dots button.active::after{
+    content:"";position:absolute;inset:0;background:var(--ember);
+    animation:fillbar 5s linear forwards;
+  }
+  @keyframes fillbar{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+  .hero-dots button::after{transform-origin:left;}
+
+  .hero-count{
+    position:absolute;left:32px;bottom:28px;z-index:5;
+    color:#fff;font-family:'Big Shoulders Display',sans-serif;font-size:14px;
+    letter-spacing:.05em;
+  }
+  .hero-count .cur{font-size:20px;font-weight:700;color:var(--ember);}
+
+  /* ===== SECTION SHARED ===== */
+  section{padding:112px 0;}
+  .section-head{
+    display:flex;align-items:flex-end;justify-content:space-between;
+    gap:24px;margin-bottom:56px;flex-wrap:wrap;
+  }
+  .section-head .num{
+    font-family:'Big Shoulders Display',sans-serif;font-size:14px;font-weight:600;
+    color:var(--ember);letter-spacing:.06em;margin-bottom:10px;display:block;
+  }
+  .section-head h2{font-size:clamp(34px,4.4vw,52px);}
+  .section-head p{max-width:40ch;color:var(--muted);font-size:15px;}
+  .alt{background:var(--ash);}
+
+  /* sub-blocks (商業攝影/活動紀錄 etc.) */
+  .subblock{margin-bottom:80px;}
+  .subblock:last-child{margin-bottom:0;}
+  .subblock-head{
+    display:flex;align-items:baseline;gap:16px;margin-bottom:28px;
+    border-bottom:1px solid var(--line);padding-bottom:16px;
+  }
+  .subblock-head h3{font-size:26px;color:var(--ink);}
+  .subblock-head span{font-size:13px;color:var(--muted);}
+
+  .gallery{
+    display:grid;grid-template-columns:repeat(6,1fr);gap:16px;
+  }
+  .gallery a{
+    position:relative;overflow:hidden;display:block;background:var(--ink);
+  }
+  .gallery img{
+    width:100%;height:100%;object-fit:cover;
+    filter:grayscale(100%);
+    transition:transform .5s ease, filter .5s ease;
+  }
+  .gallery a:hover img{transform:scale(1.06);filter:grayscale(0%);}
+  .gallery a::before{
+    content:"";position:absolute;inset:0;border:1px solid transparent;
+    transition:border-color .3s ease;z-index:2;
+  }
+  .gallery a:hover::before{border-color:var(--ember);}
+  .gallery .cap{
+    position:absolute;left:14px;bottom:14px;z-index:2;
+    color:#fff;font-size:13px;font-weight:500;
+    opacity:0;transform:translateY(6px);
+    transition:opacity .3s ease, transform .3s ease;
+  }
+  .gallery a:hover .cap{opacity:1;transform:translateY(0);}
+  .gallery a::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(0deg, rgba(0,0,0,.55), transparent 55%);
+    opacity:0;transition:opacity .3s ease;z-index:1;
+  }
+  .gallery a:hover::after{opacity:1;}
+
+  .g-tall{grid-column:span 2;grid-row:span 2;aspect-ratio:1/1.28;}
+  .g-wide{grid-column:span 4;aspect-ratio:2.2/1;}
+  .g-sq{grid-column:span 2;aspect-ratio:1/1;}
+
+  /* ===== POST-PRODUCTION (reel cards) ===== */
+  .reels{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .reel-card{
+    position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--ink);cursor:pointer;
+  }
+  .reel-card img{width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:transform .5s ease;}
+  .reel-card:hover img{transform:scale(1.06);}
+  .reel-card .overlay{position:absolute;inset:0;background:rgba(0,0,0,.3);transition:background .3s ease;}
+  .reel-card:hover .overlay{background:rgba(0,0,0,.45);}
+  .play{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:56px;height:56px;border-radius:50%;
+    background:var(--ember);
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .3s ease;
+  }
+  .reel-card:hover .play{transform:translate(-50%,-50%) scale(1.1);}
+  .play::after{
+    content:"";width:0;height:0;
+    border-top:9px solid transparent;border-bottom:9px solid transparent;
+    border-left:14px solid #fff;margin-left:4px;
+  }
+  .reel-info{position:absolute;left:18px;bottom:16px;color:#fff;z-index:2;}
+  .reel-info .cat{font-size:12px;color:var(--ember);font-weight:600;letter-spacing:.04em;margin-bottom:4px;display:block;}
+  .reel-info h4{font-family:'Inter',sans-serif;font-size:16px;font-weight:600;}
+
+  /* ===== CONTACT ===== */
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;}
+  .contact-info h2{font-size:clamp(34px,4.4vw,52px);margin-bottom:22px;}
+  .contact-info p{color:var(--muted);font-size:15px;max-width:36ch;margin-bottom:36px;}
+  .info-row{display:flex;gap:14px;padding:16px 0;border-top:1px solid var(--line);}
+  .info-row:last-of-type{border-bottom:1px solid var(--line);}
+  .info-row .label{width:88px;flex-shrink:0;font-size:13px;color:var(--muted);font-weight:600;}
+  .info-row .val{font-size:15px;}
+  .social{display:flex;gap:14px;margin-top:28px;}
+  .social a{
+    width:38px;height:38px;border:1px solid var(--line);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-size:13px;
+    transition:all .2s ease;
+  }
+  .social a:hover{border-color:var(--ember);color:var(--ember);}
+
+  form{display:flex;flex-direction:column;gap:22px;}
+  .field{display:flex;flex-direction:column;gap:8px;}
+  .field label{font-size:13px;color:var(--muted);font-weight:600;}
+  .field input,.field select,.field textarea{
+    border:none;border-bottom:1px solid var(--line);
+    padding:10px 2px;font-family:'Inter',sans-serif;font-size:15px;
+    background:transparent;color:var(--ink);
+    transition:border-color .2s ease;
+  }
+  .field input:focus,.field select:focus,.field textarea:focus{
+    outline:none;border-color:var(--ember);
+  }
+  .field textarea{resize:vertical;min-height:90px;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+  .submit-btn{
+    align-self:flex-start;margin-top:8px;
+    padding:15px 34px;background:var(--ink);color:#fff;
+    font-size:14px;font-weight:600;border:none;cursor:pointer;
+    transition:background .2s ease;
+  }
+  .submit-btn:hover{background:var(--ember);}
+
+  /* ===== FOOTER ===== */
+  footer{
+    background:var(--ink);color:#f2f2f2;padding:56px 0 28px;
+  }
+  .footer-top{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    padding-bottom:36px;border-bottom:1px solid rgba(255,255,255,.12);
+    flex-wrap:wrap;gap:24px;
+  }
+  .footer-logo{font-family:'Big Shoulders Display',sans-serif;font-size:24px;font-weight:800;}
+  .footer-logo span{color:var(--ember);}
+  .footer-nav{display:flex;gap:36px;flex-wrap:wrap;}
+  .footer-nav a{font-size:14px;color:#c9c9c9;}
+  .footer-nav a:hover{color:var(--ember);}
+  .footer-bottom{
+    display:flex;justify-content:space-between;padding-top:22px;
+    font-size:12px;color:#8a8a8a;flex-wrap:wrap;gap:10px;
+  }
+
+  /* ===== FLOATING TOOLBAR ===== */
+  .float-toolbar{
+    position:fixed;right:24px;top:50%;transform:translateY(-50%);
+    z-index:200;
+    display:flex;flex-direction:column;gap:1px;
+    background:var(--ink);
+    box-shadow:0 8px 24px rgba(0,0,0,.25);
+  }
+  .float-toolbar a{
+    position:relative;
+    width:48px;height:48px;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;
+    transition:background .2s ease, color .2s ease;
+  }
+  .float-toolbar a:hover{background:var(--ember);color:#fff;}
+  .float-toolbar a svg{width:19px;height:19px;}
+  .float-toolbar a .tip{
+    position:absolute;right:calc(100% + 10px);top:50%;transform:translateY(-50%) translateX(4px);
+    background:var(--ink);color:#fff;font-size:12px;font-weight:500;
+    padding:7px 12px;white-space:nowrap;
+    opacity:0;visibility:hidden;
+    transition:opacity .2s ease, transform .2s ease, visibility .2s;
+  }
+  .float-toolbar a:hover .tip{opacity:1;visibility:visible;transform:translateY(-50%) translateX(0);}
+  @media (max-width:760px){
+    .float-toolbar{right:14px;}
+    .float-toolbar a{width:42px;height:42px;}
+    .float-toolbar a .tip{display:none;}
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width:980px){
+    .gallery{grid-template-columns:repeat(4,1fr);}
+    .g-wide{grid-column:span 4;}
+    .g-tall{grid-column:span 2;}
+    .g-sq{grid-column:span 2;}
+    .reels{grid-template-columns:1fr 1fr;}
+    .contact-grid{grid-template-columns:1fr;gap:56px;}
+  }
+  @media (max-width:760px){
+    nav.main-nav{
+      position:fixed;top:0;right:0;bottom:0;width:78%;max-width:320px;
+      background:var(--ink);padding:100px 28px 28px;
+      transform:translateX(100%);transition:transform .35s ease;
+      overflow-y:auto;
+    }
+    nav.main-nav.show{transform:translateX(0);}
+    nav.main-nav > ul{flex-direction:column;align-items:flex-start;width:100%;gap:0;}
+    nav.main-nav > ul > li{width:100%;border-bottom:1px solid rgba(255,255,255,.1);}
+    nav.main-nav > ul > li > a{color:#fff !important;padding:16px 4px;font-size:17px;}
+    .submenu{
+      position:static;transform:none;opacity:1;visibility:visible;background:transparent;
+      max-height:0;overflow:hidden;padding:0;min-width:0;
+      transition:max-height .3s ease;
+    }
+    nav.main-nav > ul > li.open .submenu{max-height:200px;padding-bottom:8px;}
+    .submenu a{padding:10px 4px 10px 16px;font-size:14px;}
+    .nav-cta{margin-top:20px;text-align:center;}
+    .burger{display:flex;}
+    .gallery{grid-template-columns:repeat(2,1fr);}
+    .g-wide,.g-tall,.g-sq{grid-column:span 2;aspect-ratio:1/1;}
+    .reels{grid-template-columns:1fr;}
+    .row2{grid-template-columns:1fr;}
+    section{padding:72px 0;}
+    .hero{aspect-ratio:4/5;min-height:520px;}
+  }
+</style>
+</head>
+<body>
+
+<header id="siteHeader">
+  <div class="navbar">
+    <a href="#top" class="logo">GUJI<span>.</span>STUDIO</a>
+    <nav class="main-nav" id="mainNav">
+      <ul>
+        <li>
+          <a href="#photo">平面影像</a>
+          <div class="submenu">
+            <a href="#photo-commercial">商業攝影</a>
+            <a href="#photo-event">活動紀錄</a>
+          </div>
+        </li>
+        <li>
+          <a href="#video">動態攝影</a>
+          <div class="submenu">
+            <a href="#video-ad">廣告商案</a>
+            <a href="#video-event">活動紀錄</a>
+          </div>
+        </li>
+        <li><a href="#post">後期剪輯</a></li>
+        <li><a href="#contact" class="nav-cta">聯絡我們</a></li>
+      </ul>
+    </nav>
+    <button class="burger" id="burgerBtn" aria-label="開啟選單">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div id="top"></div>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="heroCarousel" style="padding:0;">
+  <div class="hero-track" id="heroTrack">
+    <div class="slide">
+      <img src="https://picsum.photos/seed/emberhero1/1600/900" alt="商業攝影範例：人像棚拍">
+      <div class="slide-copy">
+        <span class="tag">平面影像 · 商業攝影</span>
+        <h2>看見瞬間，留下真實</h2>
+        <p>從產品到人像，用光線說出品牌的語言，每一張照片都是一次精準的溝通。</p>
+        <a href="#photo" class="btn">查看平面作品</a>
+      </div>
+    </div>
+    <div class="slide">
+      <img src="https://picsum.photos/seed/emberhero2/1600/900" alt="動態攝影範例：戶外拍攝現場">
+      <div class="slide-copy">
+        <span class="tag">動態攝影 · 廣告商案</span>
+        <h2>影像的溫度，是時間留下的</h2>
+        <p>從腳本發想到現場執行，我們用鏡頭捕捉品牌與人之間最真實的互動。</p>
+        <a href="#video" class="btn">查看動態作品</a>
+      </div>
+    </div>
+    <div class="slide">
+      <img src="https://picsum.photos/seed/emberhero3/1600/900" alt="後期剪輯範例：剪輯工作站">
+      <div class="slide-copy">
+        <span class="tag">後期剪輯</span>
+        <h2>每一格，都值得被雕琢</h2>
+        <p>調光、剪接、聲音設計，讓素材成為有節奏、有情緒的完整作品。</p>
+        <a href="#post" class="btn">查看剪輯案例</a>
+      </div>
+    </div>
+  </div>
+
+  <button class="hero-arrow prev" id="heroPrev" aria-label="上一張">‹</button>
+  <button class="hero-arrow next" id="heroNext" aria-label="下一張">›</button>
+
+  <div class="hero-count"><span class="cur" id="heroCur">01</span> / 03</div>
+  <div class="hero-dots" id="heroDots">
+    <button class="active" data-i="0"></button>
+    <button data-i="1"></button>
+    <button data-i="2"></button>
+  </div>
+</section>
+
+<!-- ===== 平面影像 ===== -->
+<section id="photo">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="num">01 — PHOTOGRAPHY</span>
+        <h2>平面影像</h2>
+      </div>
+      <p>以靜態畫面凝結決定性瞬間，涵蓋商業形象拍攝與現場活動紀實。</p>
+    </div>
+
+    <div class="subblock" id="photo-commercial">
+      <div class="subblock-head">
+        <h3>商業攝影</h3>
+        <span>品牌形象 · 產品 · 人像 · 空間</span>
+      </div>
+      <div class="gallery">
+        <a href="#" class="g-tall"><img src="https://picsum.photos/seed/comm1/700/900" alt="商業攝影範例1"><span class="cap">品牌形象拍攝</span></a>
+        <a href="#" class="g-wide"><img src="https://picsum.photos/seed/comm2/1200/560" alt="商業攝影範例2"><span class="cap">產品情境攝影</span></a>
+        <a href="#" class="g-sq"><img src="https://picsum.photos/seed/comm3/600/600" alt="商業攝影範例3"><span class="cap">人像側寫</span></a>
+        <a href="#" class="g-sq"><img src="https://picsum.photos/seed/comm4/600/600" alt="商業攝影範例4"><span class="cap">空間攝影</span></a>
+        <a href="#" class="g-wide"><img src="https://picsum.photos/seed/comm5/1200/560" alt="商業攝影範例5"><span class="cap">形象廣告視覺</span></a>
+      </div>
+    </div>
+
+    <div class="subblock" id="photo-event">
+      <div class="subblock-head">
+        <h3>活動紀錄</h3>
+        <span>發表會 · 展覽 · 企業活動 · 婚禮</span>
+      </div>
+      <div class="gallery">
+        <a href="#" class="g-wide"><img src="https://picsum.photos/seed/event1/1200/560" alt="活動紀錄範例1"><span class="cap">新品發表會</span></a>
+        <a href="#" class="g-sq"><img src="https://picsum.photos/seed/event2/600/600" alt="活動紀錄範例2"><span class="cap">展覽現場</span></a>
+        <a href="#" class="g-sq"><img src="https://picsum.photos/seed/event3/600/600" alt="活動紀錄範例3"><span class="cap">企業年會</span></a>
+        <a href="#" class="g-tall"><img src="https://picsum.photos/seed/event4/700/900" alt="活動紀錄範例4"><span class="cap">典禮紀實</span></a>
+        <a href="#" class="g-wide"><img src="https://picsum.photos/seed/event5/1200/560" alt="活動紀錄範例5"><span class="cap">現場花絮</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 動態攝影 ===== -->
+<section id="video" class="alt">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="num">02 — FILM</span>
+        <h2>動態攝影</h2>
+      </div>
+      <p>從廣告製作到活動側錄，用敘事的方式把品牌故事說出來。</p>
+    </div>
+
+    <div class="subblock" id="video-ad">
+      <div class="subblock-head">
+        <h3>廣告商案</h3>
+        <span>品牌影片 · TVC · 社群廣告</span>
+      </div>
+      <div class="gallery">
+        <a href="#" class="g-wide"><img src="https://picsum.photos/seed/ad1/1200/560" alt="廣告商案範例1"><span class="cap">品牌形象影片</span></a>
+        <a href="#" class="g-sq"><img src="https://picsum.photos/seed/ad2/600/600" alt="廣告商案範例2"><span class="cap">產品短影音</span></a>
+        <a href="#" class="g-sq"><img src="https://picsum.photos/seed/ad3/600/600" alt="廣告商案範例3"><span class="cap">社群廣告素材</span></a>
+        <a href="#" class="g-tall"><img src="https://picsum.photos/seed/ad4/700/900" alt="廣告商案範例4"><span class="cap">形象人物專訪</span></a>
+        <a href="#" class="g-wide"><img src="https://picsum.photos/seed/ad5/1200/560" alt="廣告商案範例5"><span class="cap">電商主打影片</span></a>
+      </div>
+    </div>
+
+    <div class="subblock" id="video-event">
+      <div class="subblock-head">
+        <h3>活動紀錄</h3>
+        <span>記者會 · 演唱會 · 企業論壇</span>
+      </div>
+      <div class="gallery">
+        <a href="#" class="g-tall"><img src="https://picsum.photos/seed/vevent1/700/900" alt="動態活動紀錄範例1"><span class="cap">論壇側錄</span></a>
+        <a href="#" class="g-wide"><img src="https://picsum.photos/seed/vevent2/1200/560" alt="動態活動紀錄範例2"><span class="cap">演出紀實</span></a>
+        <a href="#" class="g-sq"><img src="https://picsum.photos/seed/vevent3/600/600" alt="動態活動紀錄範例3"><span class="cap">記者會花絮</span></a>
+        <a href="#" class="g-sq"><img src="https://picsum.photos/seed/vevent4/600/600" alt="動態活動紀錄範例4"><span class="cap">頒獎典禮</span></a>
+        <a href="#" class="g-wide"><img src="https://picsum.photos/seed/vevent5/1200/560" alt="動態活動紀錄範例5"><span class="cap">舞台紀錄</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 後期剪輯 ===== -->
+<section id="post">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="num">03 — POST-PRODUCTION</span>
+        <h2>後期剪輯</h2>
+      </div>
+      <p>調色、剪接與聲音設計，讓每一份素材找到自己的節奏。</p>
+    </div>
+    <div class="reels">
+      <div class="reel-card">
+        <img src="https://picsum.photos/seed/post1/640/400" alt="後期剪輯案例1">
+        <div class="overlay"></div>
+        <div class="play"></div>
+        <div class="reel-info"><span class="cat">品牌影片</span><h4>年度形象片剪輯</h4></div>
+      </div>
+      <div class="reel-card">
+        <img src="https://picsum.photos/seed/post2/640/400" alt="後期剪輯案例2">
+        <div class="overlay"></div>
+        <div class="play"></div>
+        <div class="reel-info"><span class="cat">活動紀錄</span><h4>發表會精華剪輯</h4></div>
+      </div>
+      <div class="reel-card">
+        <img src="https://picsum.photos/seed/post3/640/400" alt="後期剪輯案例3">
+        <div class="overlay"></div>
+        <div class="play"></div>
+        <div class="reel-info"><span class="cat">廣告商案</span><h4>社群短影音調色</h4></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 聯絡我們 ===== -->
+<section id="contact" class="alt">
+  <div class="wrap">
+    <div class="contact-grid">
+      <div class="contact-info">
+        <span class="num">04 — CONTACT</span>
+        <h2>聯絡我們</h2>
+        <p>Guji studio — 不論是商業拍攝、活動紀錄，或是一支需要被好好剪輯的影片，歡迎與我們聊聊你的需求。</p>
+
+        <div class="info-row"><span class="label">工作室</span><span class="val">Guji studio</span></div>
+        <div class="info-row"><span class="label">Email</span><span class="val">guji.filmstudio@gmail.com</span></div>
+        <div class="info-row"><span class="label">地址</span><span class="val">台北市大安區範例路 100 號 3 樓</span></div>
+        <div class="info-row"><span class="label">時間</span><span class="val">週一至週五 10:00–19:00</span></div>
+
+        <div class="social">
+          <a href="https://instagram.com/" aria-label="Instagram" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1"/></svg>
+          </a>
+          <a href="mailto:guji.filmstudio@gmail.com" aria-label="Email">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M3 6l9 7 9-7"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <form onsubmit="return false;">
+        <div class="row2">
+          <div class="field">
+            <label for="name">姓名</label>
+            <input id="name" type="text" placeholder="您的稱呼">
+          </div>
+          <div class="field">
+            <label for="phone">聯絡電話</label>
+            <input id="phone" type="tel" placeholder="0912-345-678">
+          </div>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" placeholder="you@example.com">
+        </div>
+        <div class="field">
+          <label for="service">需求項目</label>
+          <select id="service">
+            <option>商業攝影</option>
+            <option>活動紀錄（平面）</option>
+            <option>廣告商案（動態）</option>
+            <option>活動紀錄（動態）</option>
+            <option>後期剪輯</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="msg">需求說明</label>
+          <textarea id="msg" placeholder="請簡述拍攝時間、地點與需求內容"></textarea>
+        </div>
+        <button class="submit-btn" type="submit">送出需求</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-logo">GUJI<span>.</span>STUDIO</div>
+      <div class="footer-nav">
+        <a href="#photo-commercial">商業攝影</a>
+        <a href="#photo-event">活動紀錄</a>
+        <a href="#video-ad">廣告商案</a>
+        <a href="#video-event">動態活動紀錄</a>
+        <a href="#post">後期剪輯</a>
+        <a href="#contact">聯絡我們</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 GUJI STUDIO. All rights reserved.</span>
+      <span>本網站範例圖片僅供版面配置參考</span>
+    </div>
+  </div>
+</footer>
+
+<div class="float-toolbar">
+  <a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">
+    <span class="tip">Instagram</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1"/></svg>
+  </a>
+  <a href="mailto:guji.filmstudio@gmail.com" aria-label="Email">
+    <span class="tip">guji.filmstudio@gmail.com</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M3 6l9 7 9-7"/></svg>
+  </a>
+</div>
+
+<script>
+  // ---- header solid on scroll ----
+  const header = document.getElementById('siteHeader');
+  const onScroll = () => header.classList.toggle('solid', window.scrollY > 40);
+  document.addEventListener('scroll', onScroll);
+  onScroll();
+
+  // ---- mobile nav ----
+  const burger = document.getElementById('burgerBtn');
+  const mainNav = document.getElementById('mainNav');
+  burger.addEventListener('click', () => {
+    mainNav.classList.toggle('show');
+    header.classList.add('solid');
+  });
+  document.querySelectorAll('.main-nav > ul > li').forEach(li => {
+    const link = li.querySelector('a');
+    const sub = li.querySelector('.submenu');
+    if (sub) {
+      link.addEventListener('click', (e) => {
+        if (window.innerWidth <= 760) {
+          e.preventDefault();
+          li.classList.toggle('open');
+        }
+      });
+    }
+  });
+  document.querySelectorAll('.submenu a, .main-nav > ul > li > a.nav-cta, .footer-nav a').forEach(a=>{
+    a.addEventListener('click', ()=> mainNav.classList.remove('show'));
+  });
+
+  // ---- hero carousel ----
+  const track = document.getElementById('heroTrack');
+  const slides = track.children;
+  const total = slides.length;
+  const dots = document.querySelectorAll('#heroDots button');
+  const curEl = document.getElementById('heroCur');
+  let index = 0;
+  let timer;
+
+  function go(i, restart = true){
+    index = (i + total) % total;
+    track.style.transform = `translateX(-${index * 100}%)`;
+    dots.forEach((d, di) => d.classList.toggle('active', di === index));
+    curEl.textContent = String(index + 1).padStart(2, '0');
+    if (restart) resetTimer();
+  }
+  function resetTimer(){
+    clearInterval(timer);
+    timer = setInterval(() => go(index + 1), 5000);
+  }
+  document.getElementById('heroNext').addEventListener('click', () => go(index + 1));
+  document.getElementById('heroPrev').addEventListener('click', () => go(index - 1));
+  dots.forEach(d => d.addEventListener('click', () => go(Number(d.dataset.i))));
+
+  // swipe
+  let startX = 0, dx = 0, dragging = false;
+  track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; dragging = true; clearInterval(timer); }, {passive:true});
+  track.addEventListener('touchmove', e => { if(dragging) dx = e.touches[0].clientX - startX; }, {passive:true});
+  track.addEventListener('touchend', () => {
+    if (dragging){
+      if (dx < -50) go(index + 1);
+      else if (dx > 50) go(index - 1);
+      else resetTimer();
+    }
+    dragging = false; dx = 0;
+  });
+
+  go(0);
+</script>
+</body>
+</html>
