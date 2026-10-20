@@ -498,6 +498,23 @@
     .sc-note p{display:none;}
     .footer-contact{grid-template-columns:1fr;}
   }
+
+  /* ===== 輪播：橫式圖片 ===== */
+  .hero{height:auto;padding:28px 0 0;}
+  .slide{height:auto;padding:0 40px;}
+  .s-img{position:relative;left:auto;bottom:auto;transform:none;width:100%;max-width:1360px;margin:0 auto;aspect-ratio:16/7;box-shadow:0 14px 30px rgba(40,25,20,.16);}
+  .s-img img{filter:none;}
+  .hero-dots{top:auto;bottom:22px;}
+  .hero-dots button{background:rgba(255,255,255,.55);}
+  .hero-arrow{background:rgba(251,250,246,.85);border-color:transparent;}
+  .hero-arrow:hover{background:var(--ink);color:var(--paper);}
+  .hero-arrow.prev{left:60px;} .hero-arrow.next{right:60px;}
+  @media (max-width:820px){
+    .hero{height:auto;padding-top:16px;}
+    .slide{padding:0 22px;}
+    .s-img{width:100%;aspect-ratio:4/3;}
+    .hero-dots{bottom:14px;}
+  }
 </style>
 </head>
 <body>
@@ -544,13 +561,13 @@
 <section class="hero" id="heroCarousel" data-page="home">
   <div class="hero-track" id="heroTrack">
     <div class="slide">
-      <figure class="s-img"><img src="https://picsum.photos/seed/guji-hero1/800/1100" alt="PHOTO" draggable="false"></figure>
+      <figure class="s-img"><img src="https://picsum.photos/seed/guji-hero1/1920/900" alt="PHOTO" draggable="false"></figure>
     </div>
     <div class="slide">
-      <figure class="s-img"><img src="https://picsum.photos/seed/guji-hero2/800/1100" alt="FILM" draggable="false"></figure>
+      <figure class="s-img"><img src="https://picsum.photos/seed/guji-hero2/1920/900" alt="FILM" draggable="false"></figure>
     </div>
     <div class="slide">
-      <figure class="s-img"><img src="https://picsum.photos/seed/guji-hero3/800/1100" alt="EDIT" draggable="false"></figure>
+      <figure class="s-img"><img src="https://picsum.photos/seed/guji-hero3/1920/900" alt="EDIT" draggable="false"></figure>
     </div>
   </div>
   <button class="hero-arrow prev" id="heroPrev" aria-label="上一張">‹</button>
